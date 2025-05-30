@@ -1,9 +1,10 @@
 #include "../include/thread.hpp"
+#include "../include/scheduler.hpp"
 #include <iostream>
 #include <vector>
 #include <memory>
 
-// simple thread id
+// Define a simple type for thread ID
 using ThreadId = uint32_t;
 
 // Global counter for assigning unique thread IDs
@@ -20,6 +21,9 @@ static std::unique_ptr<Stack> allocateStack(){
     return std::make_unique<Stack>(STACK_SIZE);
 }
 
+// Declare a global scheduler instance. It will be defined in kernel.cpp
+extern Scheduler kernelScheduler;
+
 // Thread list before we have a scheduler
 static std::vector<ThreadControlBlock> threads;
 
@@ -32,40 +36,15 @@ ThreadId createThread(std::function<void()> entryPoint, int priority){
     uintptr_t stackTop = reinterpret_cast<uintptr_t>(stack->data() + stack->size());
 
     // Create and initialize the TCB
+    all_tcbs.emplace_back(newId, entryPoint, priority);
     ThreadControlBlock newThread(newId, entryPoint, priority);
     newThread.stackPointer = stackTop;
     newThread.state = ThreadState::READY;
 
-    // Add the new thread to the list until we have a scheduler
-    threads.push_back(newThread);
+    // Add the new thread to scheduler's ready queue
+    kernelScheduler.add_thread(newThread);
 
     std::cout << "Thread created with ID: " << newId << " and priority: " << priority << std::endl;
 
     return newId;
 }
-
-// For now, a single function to list all created threads
-void list_threads(){
-    std::cout << "--------List of Threads--------" << std::endl;
-    for(const auto& thread : threads){
-        std::cout << "Thread ID: " << thread.threadId << ", Priority: " << thread.priority 
-                    << ", State: ";
-        switch (thread.state)
-        {
-        case Threadstate::READY:
-            std::cout << "READY" << std::endl;
-            break;
-        case Threadstate::RUNNING:
-            std::cout << "RUNNING" << std::endl;
-            break;
-        case Threadstate::BLOCKED:
-            std::cout << "BLOCKED" << std::endl;
-            break;
-        case Threadstate::FINISHED:
-            std::cout << "FINISHED" << std::endl;
-            break;
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "--------------------------------" << std::endl;
-} 
