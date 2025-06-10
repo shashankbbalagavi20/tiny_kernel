@@ -1,5 +1,5 @@
-#include "include/scheduler.hpp"
-#include "include/thread.hpp"
+#include "scheduler.hpp"
+#include "thread.hpp"
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -9,12 +9,12 @@ Scheduler kernelScheduler;
 
 // A simple function for our threads
 void thread_function_one() {
-    for (int i = 0; i < 5; ++i) {
-        std::cout << "Thread 1 (Priority: 5) running iteration " << i << std::endl;
+    for (int i = 0; i < 5; ++i) {        
         // For now, simulate some work.
+        std::cout << "Thread 1 (Priority: 5) running iteration " << i << std::endl;
     }
+    // In a real scenario, this thread would then be marked FINISHED and removed from scheduler
     std::cout << "Thread 1 (Priority: 5) finished." << std::endl;
-    // In a real scenario, this thread would then be marked FINISHED and removed from scheduler.
 }
 
 void thread_function_two() {

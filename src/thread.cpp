@@ -1,14 +1,14 @@
-#include "include/thread.hpp"
-#include "include/scheduler.hpp"
+#include "../include/thread.hpp"
+#include "../include/scheduler.hpp"
 #include <iostream>
 #include <vector>
 #include <memory>
 
 // Let's define a simple type for a thread ID
-using ThreadId = uint32_t;
+using threadId = uint32_t;
 
 // Global counter for assigning unique thread IDs
-static ThreadId nextThreadId = 1;
+static threadId nextthreadId = 1;
 
 // In a real kernel, the stack would be allocated from memory.
 // For our conceptual model, we can simulate this.
@@ -29,8 +29,8 @@ static std::vector<ThreadControlBlock> all_tcbs;
 
 
 // Function to create a new thread
-ThreadId create_thread(std::function<void()> entryPoint, int priority) {
-    ThreadId newId = nextThreadId++;
+threadId create_thread(std::function<void()> entryPoint, int priority) {
+    threadId newId = nextthreadId++;
 
     // 1. Allocate a stack (conceptually)
     // For simplicity, we just simulate allocation; the stack object's lifetime

@@ -1,4 +1,5 @@
-#include "../include/scheduler.hpp"
+#include "scheduler.hpp"
+#include "thread.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -14,7 +15,7 @@ ThreadControlBlock* Scheduler::get_next_thread(){
         currentThread = readyQueue.top();
         readyQueue.pop();
         currentThread->state = ThreadState::RUNNING;
-        std::cout << "Next Thread to run: " << currentThread->threadId << "(Priority: " << currentThread->priority << ")" << std::endl;
+        std::cout << "Next Thread to run: " << currentThread->threadId << "(Priority: " << currentThread->get_priority() << ")" << std::endl;
         return currentThread;
     }
     return nullptr; // No threads available
